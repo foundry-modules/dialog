@@ -1,0 +1,8 @@
+        }
+
+        exports();
+        module.resolveWith(exports);
+
+     });
+
+});
