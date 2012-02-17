@@ -16,9 +16,10 @@ all: body min
 
 body:
 	cat ${BASE_FILES} > ${DEVELOPMENT_DIR}/dialog.js
-	mkdir ${DEVELOPMENT_DIR}/dialog
+	mkdir -p ${DEVELOPMENT_DIR}/dialog
 	cp ${SRC_DIR}/default.ejs ${DEVELOPMENT_DIR}/dialog/
 
 min:
 	${UGLIFY} ${DEVELOPMENT_DIR}/dialog.js > ${PRODUCTION_DIR}/dialog.js
+	mkdir -p ${PRODUCTION_DIR}/dialog
 	cp ${SRC_DIR}/default.ejs ${PRODUCTION_DIR}/dialog/
