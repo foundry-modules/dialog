@@ -10,8 +10,11 @@ $.dialog = function(options)
     }
 
     if (typeof options === "string" || $.isDeferred(options)) {
+
+    	var afterShow = arguments[1];
     	options = {
-    		content: options
+    		content: options,
+    		afterShow: ($.isFunction(afterShow)) ? afterShow : $.noop
     	}
     }
 
