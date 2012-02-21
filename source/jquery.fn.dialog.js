@@ -1,5 +1,5 @@
 $.Controller(
-    'dialog_',
+    'dialog',
     {
         defaults: {
 
@@ -88,8 +88,6 @@ $.Controller(
 
         init: function()
         {
-            console.log('here');
-
             var _this = this;
 
             this.setInitOptions(this.options);

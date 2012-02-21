@@ -24,8 +24,11 @@
         'throttle-debounce',
         'easing'
      )
+     .stylesheet(
+        'dialog/default'
+     )
      .template(
-        'dialog/default.ejs'
+        'dialog/default'
      )
      .done(function() {
 
