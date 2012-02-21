@@ -5,8 +5,7 @@ $.dialog = function(options)
 
     var globalDialog = $('.foundryDialog.global');
 
-    if (globalDialog.length < 1)
-    {
+    if (globalDialog.length < 1) {
         globalDialog = $($.View('dialog/default')).addClass('global').appendTo('body');
     }
 
@@ -16,5 +15,14 @@ $.dialog = function(options)
     	}
     }
 
-    return globalDialog.implement('dialog', options, function(){});
+    var dialogController = globalDialog.controllers("dialog")[0];
+
+    if (dialogController) {
+
+    	dialogController.update(options);
+    } else {
+    	globalDialog.implement('dialog', options, function(){});
+    }
+
+    return globalDialog;
 };
