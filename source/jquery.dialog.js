@@ -10,5 +10,11 @@ $.dialog = function(options)
         globalDialog = $($.View('dialog/default')).addClass('global').appendTo('body');
     }
 
+    if (typeof options === "string" || $.isDeferred(options)) {
+    	options = {
+    		content: options
+    	}
+    }
+
     return globalDialog.implement('dialog', options, function(){});
 };
