@@ -224,7 +224,17 @@ $.Controller(
                     break;
 
                 case 'deferred':
-                    this.showLoader();
+                    var ajax = this.options.content,
+                        contentOptions = this.options;
+
+                    this.showLoader(function() {
+
+                        ajax.done(function(html) {
+
+                            _this.update($.extend(true, {}, contentOptions, {content: html}));
+                        });
+                    });
+
                     break;
             }
         },
