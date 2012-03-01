@@ -1,37 +1,47 @@
 include ../../build/modules.mk
-SRC_DIR = source
-BUILD_DIR = build
 
-BASE_FILES = ${FOUNDRY}/build/foundry_intro.js \
-${SRC_DIR}/module_intro.js \
-${SRC_DIR}/jquery.fn.dialog.js \
-${SRC_DIR}/jquery.dialog.js \
-${SRC_DIR}/module_outro.js \
-${FOUNDRY}/build/foundry_outro.js
+MODULE = dialog
+FILENAME = ${MODULE}.js
+RAWFILE = ${DEVELOPMENT_DIR}/${MODULE}.raw.js
 
-all: body min
+SOURCE = ${SOURCE_DIR}/module_intro.js \
+${SOURCE_DIR}/jquery.fn.dialog.js \
+${SOURCE_DIR}/jquery.dialog.js \
+${SOURCE_DIR}/module_outro.js
 
-body:
-	mkdir -p ${LIBRARY_DEV}/dialog
-	mkdir -p ${LIBRARY_DEV}/dialog/images
+PRODUCTION = ${PRODUCTION_DIR}/${FILENAME}
+DEVELOPMENT = ${DEVELOPMENT_DIR}/${FILENAME}
+PRODUCTION_FOLDER = ${PRODUCTION_DIR}/${MODULE}
+DEVELOPMENT_FOLDER = ${DEVELOPMENT_DIR}/${MODULE}
 
-	cat ${BASE_FILES} > ${LIBRARY_DEV}/dialog.js
-	cp ${SRC_DIR}/default.ejs ${LIBRARY_DEV}/dialog/
-	cp ${SRC_DIR}/images/* ${LIBRARY_DEV}/dialog/images/
-	cp ${SRC_DIR}/default.css ${LIBRARY_DEV}/dialog/default.css
+all: raw module min clean
+
+raw:
+	cat ${SOURCE} > ${RAWFILE}
+
+module:
+	${MODULARIZE} -n "${MODULE}" -m ${RAWFILE} > ${DEVELOPMENT}
+
+	mkdir -p ${DEVELOPMENT_FOLDER}
+	mkdir -p ${DEVELOPMENT_FOLDER}/images
+	cp ${SOURCE_DIR}/default.ejs ${DEVELOPMENT_FOLDER}/
+	cp ${SOURCE_DIR}/images/* ${DEVELOPMENT_FOLDER}/images/
+	cp ${SOURCE_DIR}/default.css ${DEVELOPMENT_FOLDER}/default.css
 
 min:
-	mkdir -p ${LIBRARY_PRO}/dialog
-	mkdir -p ${LIBRARY_PRO}/dialog/images
+	${UGLIFYJS} ${DEVELOPMENT} > ${PRODUCTION}
 
-	${UGLIFYJS} ${LIBRARY_DEV}/dialog.js > ${LIBRARY_PRO}/dialog.js
-	cp ${SRC_DIR}/default.ejs ${LIBRARY_PRO}/dialog/
-	cp ${SRC_DIR}/images/* ${LIBRARY_PRO}/dialog/images/
-	${UGLIFYCSS} ${SRC_DIR}/default.css > ${LIBRARY_PRO}/dialog/default.css
-
+	mkdir -p ${PRODUCTION_FOLDER}
+	mkdir -p ${PRODUCTION_FOLDER}/images
+	cp ${SOURCE_DIR}/default.ejs ${PRODUCTION_FOLDER}/
+	cp ${SOURCE_DIR}/images/* ${PRODUCTION_FOLDER}/images/
+	${UGLIFYCSS} ${SOURCE_DIR}/default.css > ${PRODUCTION_FOLDER}/default.css
 
 clean:
-	rm -fr ${LIBRARY_PRO}/dialog.js
-	rm -fr ${LIBRARY_PRO}/dialog
-	rm -fr ${LIBRARY_DEV}/dialog.js
-	rm -fr ${LIBRARY_DEV}/dialog
+	rm -fr ${RAWFILE}
+
+uninstall:
+	rm -fr ${PRODUCTION}
+	rm -fr ${PRODUCTION_FOLDER}
+	rm -fr ${DEVELOPMENT}
+	rm -fr ${DEVELOPMENT_FOLDER}

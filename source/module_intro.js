@@ -12,25 +12,18 @@
  *
  */
 
- $.module('dialog', function() {
-
-    var module = this;
-
-    $.require()
-     .library(
-        'mvc/controller',
-        'ui/core',
-        'ui/position',
-        'throttle-debounce',
-        'easing'
-     )
-     .stylesheet(
-        'dialog/default'
-     )
-     .template(
-        'dialog/default'
-     )
-     .done(function() {
-
-        var exports = function() {
-
+$.require()
+ .library(
+    'mvc/controller',
+    'ui/core',
+    'ui/position',
+    'throttle-debounce',
+    'easing'
+ )
+ .stylesheet(
+    'dialog/default'
+ )
+ .template(
+    'dialog/default'
+ )
+ .done(function() {
