@@ -7,6 +7,8 @@ $.Controller(
             content: '',
             buttons: {},
 
+            customClass: "",
+
             width: 'auto',
             height: 'auto',
 
@@ -110,6 +112,10 @@ $.Controller(
             {
                 _this[name] = _this.find(_this.options[name]);
             });
+
+            if (this.options.content===undefined) {
+                return;
+            }
 
             this.display();
         },
