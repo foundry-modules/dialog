@@ -24,7 +24,7 @@ module:
 
 	mkdir -p ${DEVELOPMENT_FOLDER}
 	mkdir -p ${DEVELOPMENT_FOLDER}/images
-	cp ${SOURCE_DIR}/default.ejs ${DEVELOPMENT_FOLDER}/
+	cp ${SOURCE_DIR}/default.ejs ${DEVELOPMENT_FOLDER}/default.htm
 	cp ${SOURCE_DIR}/images/* ${DEVELOPMENT_FOLDER}/images/
 	cp ${SOURCE_DIR}/default.css ${DEVELOPMENT_FOLDER}/default.css
 
@@ -33,7 +33,7 @@ min:
 
 	mkdir -p ${PRODUCTION_FOLDER}
 	mkdir -p ${PRODUCTION_FOLDER}/images
-	cp ${SOURCE_DIR}/default.ejs ${PRODUCTION_FOLDER}/
+	cp ${SOURCE_DIR}/default.ejs ${PRODUCTION_FOLDER}/default.htm
 	cp ${SOURCE_DIR}/images/* ${PRODUCTION_FOLDER}/images/
 	${UGLIFYCSS} ${SOURCE_DIR}/default.css > ${PRODUCTION_FOLDER}/default.css
 
