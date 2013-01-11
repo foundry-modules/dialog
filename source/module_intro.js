@@ -14,7 +14,6 @@
 
 $.require()
  .library(
-    'mvc/controller',
     'ui/core',
     'ui/position',
     'throttle-debounce',
