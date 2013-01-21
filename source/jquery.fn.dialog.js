@@ -404,7 +404,7 @@ $.Controller(
             }
 
             // Pass 5: Readjust position based on final dialog dimension
-            refElement;
+            refElement
                 .css(self.options.css)
                 //  FF3 can't retrieve css positions when element is on display: none;
                 // .initialPosition(self.options.position, true);
