@@ -464,7 +464,7 @@ $.Controller(
                 {
                     if (!self.ready)
                     {
-                        self.on("resize.dialog scroll.dialog", window, $.debounce(150, function(){ self.refresh() }));
+                        $(window).bind("resize.dialog scroll.dialog", $.debounce(150, function(){ self.refresh() }));
                         self.ready = true;
                     }
 
@@ -652,7 +652,7 @@ $.Controller(
                 .css(self.options.overlay.css)
                 .click(function()
                 {
-                    _self.close();
+                    self.close();
                 })
                 .appendTo('body');
         },
