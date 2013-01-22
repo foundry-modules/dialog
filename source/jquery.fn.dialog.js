@@ -438,11 +438,13 @@ $.Controller(
 
             $.each(this.options.buttons, function(i, button)
             {
-                var events = $.extend({}, button);
+                var events = $.extend({}, button),
+                    classNames  = button.classNames ? button.classNames : '';
                 delete events.name;
 
                 $(document.createElement('button'))
                     .attr('type', 'button')
+                    .addClass( classNames )
                     .html(button.name)
                     .bind(events)
                     .appendTo(dialogButtons);
