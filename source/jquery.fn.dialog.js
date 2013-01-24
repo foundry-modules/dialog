@@ -96,7 +96,7 @@ $.Controller(
 
             self.initElement = self.element.clone();
 
-            self.element.finalizeContent = function(){ return self.finalizeContent.apply(self) };
+            self.element.finalizeContent = function(){ return self.finalizeContent.apply(self, arguments) };
 
             // Experimental optimization
             // Make a reference to all the static elements on init.
@@ -283,7 +283,7 @@ $.Controller(
             return self.initOptions.css.width=='auto' || self.initOptions.css.height=='auto';
         },
 
-        finalizeContent: function()
+        finalizeContent: function(finale)
         {
             self.element
                 .css(self.options.css);
@@ -322,8 +322,23 @@ $.Controller(
                     self.options.content
                         .css({position: 'relative', visibility: 'visible'});
                 } else {
+
+                    // Finalize content might be called multiple times during different
+                    // transition states. But only the last one should be inserted
+                    // with the embedded scripts.
+
+                    var content;
+
+                    if (finale) {
+                        content = self.options.content;
+                        self.options.content = self.stripScript(content);
+                    } else {
+                        content = self.stripScript(self.options.content);
+                    }
+
+                    // This is inserted with scripts
                     self.dialogContent
-                        .html(self.options.content);
+                        .html(content);
                 }
             }
 
@@ -331,6 +346,17 @@ $.Controller(
                 self.finalizeButtons();
 
             return self.element;
+        },
+
+        stripScript: function(html) {
+
+            if (!$.isString(html)) return html;
+
+            var content = $($.parseHTML(html));
+
+            content.find("script").remove();
+
+            return content;
         },
 
         finalizeSize: function(fast)
@@ -361,9 +387,9 @@ $.Controller(
                 }
 
                 // Pass 1: Readjust dialog body's dimension based on dialog's content
-                var isIframe = $($.parseHTML(self.options.content)).is('iframe')
+                var isIframe = $($.parseHTML(self.options.content)).is('iframe');
 
-                var refContent = (isIframe) ? document.createElement('div') : self.options.content;
+                var refContent = (isIframe) ? document.createElement('div') : self.stripScript(self.options.content);
 
                 self.options.body.css.width  = (isIframe && self.options.width=='auto')  ? self.options.content.contents().width() : self.options.width;
                 self.options.body.css.height = (isIframe && self.options.height=='auto') ? self.options.content.contents().height() : self.options.height;
@@ -618,7 +644,7 @@ $.Controller(
                         }, 'normal', 'easeInCubic',
                         function()
                         {
-                            self.element.finalizeContent();
+                            self.element.finalizeContent(true);
 
                             dialogBody.css({opacity: 1});
                             dialogFooter.css({opacity: 1});
