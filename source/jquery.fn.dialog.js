@@ -6,7 +6,7 @@ $.Controller(
         defaultOptions: {
 
             title: '',
-            content: '',
+            content: undefined,
             buttons: {},
 
             customClass: "",
@@ -696,8 +696,10 @@ $.Controller(
             self.hide(function()
             {
                 self.element.remove();
-                self.refElement.remove();
+                self.refElement && self.refElement.remove();
             });
+
+            return self;
         },
 
         "{closeButton} click": function()
