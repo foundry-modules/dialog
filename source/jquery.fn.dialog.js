@@ -369,7 +369,9 @@ $.Controller(
             var refElement = self.refElement,
                 options = self.options,
                 body = options.body,
-                content = options.content;
+                content = options.content,
+                css = options.css,
+                bodyCss = body.css;
 
             if (!fast)
             {
@@ -399,17 +401,17 @@ $.Controller(
 
                 var refContent = (isIframe) ? document.createElement('div') : self.stripScript(content);
 
-                body.css.width  = (isIframe && options.width=='auto')  ? content.contents().width() : options.width;
-                body.css.height = (isIframe && options.height=='auto') ? content.contents().height() : options.height;
+                bodyCss.width  = (isIframe && options.width=='auto')  ? content.contents().width() : options.width;
+                bodyCss.height = (isIframe && options.height=='auto') ? content.contents().height() : options.height;
 
                 refBody
-                    .css(body.css)
+                    .css(bodyCss)
                     .toggleClass('type-iframe', isIframe)
                     .html(refContent);
 
                 if (refBody.css("boxSizing")!=="border-box") {
-                    body.css.width  = refBody.width();
-                    body.css.height = refBody.height();
+                    bodyCss.width  = refBody.width();
+                    bodyCss.height = refBody.height();
                 }
 
                 // Pass 2: Re-adjust dialog's dimension based on window's dimension
@@ -421,19 +423,19 @@ $.Controller(
                     widthExceeded  = width > maxWidth,
                     heightExceeded = height > maxHeight;
 
-                options.css.width  = (widthExceeded) ? maxWidth : width;
-                options.css.height = (heightExceeded) ? maxHeight : height;
+                css.width  = (widthExceeded) ? maxWidth : width;
+                css.height = (heightExceeded) ? maxHeight : height;
 
                 // Pass 3: Readjust dialog body's dimension based on readjusted dialog's dimension
-                body.css.width  -= (width  - options.css.width);
-                body.css.height -= (height - options.css.height);
-                body.css.minWidth = body.css.minHeight = 'auto';
+                bodyCss.width  -= (width  - css.width);
+                bodyCss.height -= (height - css.height);
+                bodyCss.minWidth = bodyCss.minHeight = 'auto';
 
                 // Pass 4: Decide scrollbar visiblity based on readjusted dialog body's dimension.
-                refBody.css(body.css);
+                refBody.css(bodyCss);
 
-                body.css.overflowX = (!widthExceeded  || isIframe || refBody[0].scrollWidth  <= body.css.width)  ? 'auto' : 'scroll';
-                body.css.overflowY = (!heightExceeded || isIframe || refBody[0].scrollHeight <= body.css.height) ? 'auto' : 'scroll';
+                bodyCss.overflowX = (!widthExceeded  || isIframe || refBody[0].scrollWidth  <= bodyCss.width)  ? 'auto' : 'scroll';
+                bodyCss.overflowY = (!heightExceeded || isIframe || refBody[0].scrollHeight <= bodyCss.height) ? 'auto' : 'scroll';
 
                 // Clean up
                 refBody.html('');
@@ -441,14 +443,14 @@ $.Controller(
 
             // Pass 5: Readjust position based on final dialog dimension
             refElement
-                .css(options.css)
+                .css(css)
                 //  FF3 can't retrieve css positions when element is on display: none;
                 // .initialPosition(options.position, true);
                 .css('visibility', 'hidden')
                 .position(options.position);
 
-            options.css.top  = refElement.css('top');
-            options.css.left = refElement.css('left')
+            css.top  = refElement.css('top');
+            css.left = refElement.css('left')
         },
 
         finalizeButtons: function()
