@@ -57,6 +57,11 @@ $.Controller(
                 }
             },
 
+            loader: {
+                width: 300,
+                height: 100
+            },
+
             iframe: {
                 css: {
                     width: '100%',
@@ -245,14 +250,17 @@ $.Controller(
 
         showLoader: function(callback)
         {
+            var originalWidth = self.options.width,
+                originalHeight = self.options.height;
+
             var showLoaderOverlay = function()
             {
                 self.dialogLoader
                     .show()
                     .css(
                     {
-                        width: self.dialogBody.width(),
-                        height: self.dialogBody.height()
+                        width: self.dialogBody.outerWidth(true),
+                        height: self.dialogBody.outerHeight(true)
                     })
                     .position({
                         my: 'top left',
@@ -260,17 +268,21 @@ $.Controller(
                         of: self.options.dialogContent
                     });
 
+                // Reset width & height
+                self.options.width = originalWidth;
+                self.options.height = originalHeight;
+
                 return callback && callback();
             };
 
             return (self.ready) ? showLoaderOverlay() : self.update(
-            {
+            $.extend({
                 title: self.options.title,
                 content: '',
                 width: self.initOptions.body.css.minWidth,
                 height: self.initOptions.body.css.minHeight,
                 afterShow: showLoaderOverlay
-            });
+            }, self.options.loader));
         },
 
         hideLoader: function()
