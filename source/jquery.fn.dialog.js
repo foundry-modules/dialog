@@ -285,19 +285,22 @@ $.Controller(
 
         finalizeContent: function(finale)
         {
+            var options = self.options,
+                content = options.content;
+
             self.element
-                .css(self.options.css);
+                .css(options.css);
 
             self.dialogContent
-                .css(self.options.body.css);
+                .css(options.body.css);
 
-            if (self.options.title!==null)
+            if (options.title!==null)
                 self.dialogTitle
-                    .html(self.options.title);
+                    .html(options.title);
 
-            if (self.options.content!==null)
+            if (content!==null)
             {
-                var isIframe = !$.isString(self.options.content) && $(self.options.content).is('iframe');
+                var isIframe = !$.isString(content) && $(content).is('iframe');
 
                 self.dialogBody
                     .toggleClass('type-iframe', isIframe);
@@ -308,18 +311,18 @@ $.Controller(
                     // The difference is that this code will go through
                     // not only html elements but also other types of dom nodes,
                     // e.g. text nodes.
-                    var parent = self.options.content.parent()[0];
+                    var parent = content.parent()[0];
 
                     var i = 0;
                     while(parent.childNodes.length > 1)
                     {
                         var node = parent.childNodes[i];
-                        if (node!==self.options.content[0])
+                        if (node!==content[0])
                             parent.removeChild(node);
                         i++;
                     }
 
-                    self.options.content
+                    content
                         .css({position: 'relative', visibility: 'visible'});
                 } else {
 
@@ -327,18 +330,20 @@ $.Controller(
                     // transition states. But only the last one should be inserted
                     // with the embedded scripts.
 
-                    var content;
+                    var finalContent;
 
                     if (finale) {
-                        content = self.options.content;
-                        self.options.content = self.stripScript(content);
+                        finalContent = content;
+
+                        // Store the stripped version into the options
+                        options.content = self.stripScript(finalContent);
                     } else {
-                        content = self.stripScript(self.options.content);
+                        finalContent = self.stripScript(content);
                     }
 
                     // This is inserted with scripts
                     self.dialogContent
-                        .html(content);
+                        .html(finalContent);
                 }
             }
 
@@ -616,7 +621,8 @@ $.Controller(
                 show: function(callback)
                 {
                     var dialogBody = self.dialogBody,
-                        dialogFooter = self.dialogFooter;
+                        dialogFooter = self.dialogFooter,
+                        css = self.options.css;
 
                     if (!self.ready)
                     {
@@ -626,8 +632,8 @@ $.Controller(
                             .finalizeContent()
                             .css(
                             {
-                                top: parseInt(self.options.css.top) + (parseInt(self.options.css.height) / 2),
-                                left: parseInt(self.options.css.left) + (parseInt(self.options.css.width) / 2),
+                                top: parseInt(css.top) + (parseInt(css.height) / 2),
+                                left: parseInt(css.left) + (parseInt(css.width) / 2),
                                 width: 0,
                                 height: 0
                             });
@@ -642,10 +648,10 @@ $.Controller(
                     self.element
                         .animate(
                         {
-                            top   : self.options.css.top,
-                            left  : self.options.css.left,
-                            width : self.options.css.width,
-                            height: self.options.css.height
+                            top   : css.top,
+                            left  : css.left,
+                            width : css.width,
+                            height: css.height
                         }, 'normal', 'easeInCubic',
                         function()
                         {
@@ -660,11 +666,13 @@ $.Controller(
                 },
                 hide: function(callback)
                 {
+                    var css = self.options.css;
+
                     self.element
                         .animate(
                             {
-                                top: parseInt(self.options.css.top) + (parseInt(self.options.css.height) / 2),
-                                left: parseInt(self.options.css.left) + (parseInt(self.options.css.width) / 2),
+                                top: parseInt(css.top) + (parseInt(css.height) / 2),
+                                left: parseInt(css.left) + (parseInt(css.width) / 2),
                                 width: 0,
                                 height: 0
                             }, 'normal', 'easeOutCubic',
