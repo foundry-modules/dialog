@@ -361,24 +361,27 @@ $.Controller(
 
         finalizeSize: function(fast)
         {
-            var refElement = self.refElement;
+            var refElement = self.refElement,
+                options = self.options,
+                body = options.body,
+                content = options.content;
 
             if (!fast)
             {
                 refElement = self.refElement = self.initElement.clone().removeClass('global').insertAfter(self.element);
-                refTitle   = refElement.find(self.options.dialogTitle);
-                refBody    = refElement.find(self.options.dialogBody);
-                refFooter  = refElement.find(self.options.dialogFooter);
-                refButtons = refElement.find(self.options.dialogButtons);
+                refTitle   = refElement.find(options.dialogTitle);
+                refBody    = refElement.find(options.dialogBody);
+                refFooter  = refElement.find(options.dialogFooter);
+                refButtons = refElement.find(options.dialogButtons);
 
                 refElement
                     .css(self.initOptions.css)
                     .css({display: 'block'});
 
                 refTitle
-                    .html(self.options.title);
+                    .html(options.title);
 
-                if (!$.isEmptyObject(self.options.buttons))
+                if (!$.isEmptyObject(options.buttons))
                 {
                     refFooter.show();
                     refButtons.append('<button>test</button>');
@@ -387,25 +390,25 @@ $.Controller(
                 }
 
                 // Pass 1: Readjust dialog body's dimension based on dialog's content
-                var isIframe = !$.isString(self.options.content) && $(self.options.content).is('iframe');
+                var isIframe = !$.isString(content) && $(content).is('iframe');
 
-                var refContent = (isIframe) ? document.createElement('div') : self.stripScript(self.options.content);
+                var refContent = (isIframe) ? document.createElement('div') : self.stripScript(content);
 
-                self.options.body.css.width  = (isIframe && self.options.width=='auto')  ? self.options.content.contents().width() : self.options.width;
-                self.options.body.css.height = (isIframe && self.options.height=='auto') ? self.options.content.contents().height() : self.options.height;
+                body.css.width  = (isIframe && options.width=='auto')  ? content.contents().width() : options.width;
+                body.css.height = (isIframe && options.height=='auto') ? content.contents().height() : options.height;
 
                 refBody
-                    .css(self.options.body.css)
+                    .css(body.css)
                     .toggleClass('type-iframe', isIframe)
                     .html(refContent);
 
                 if (refBody.css("boxSizing")!=="border-box") {
-                    self.options.body.css.width  = refBody.width();
-                    self.options.body.css.height = refBody.height();
+                    body.css.width  = refBody.width();
+                    body.css.height = refBody.height();
                 }
 
                 // Pass 2: Re-adjust dialog's dimension based on window's dimension
-                var offset         = self.options.offset,
+                var offset         = options.offset,
                     width          = refElement.width(),
                     height         = refElement.height(),
                     maxWidth       = $(window).width() - offset,
@@ -413,19 +416,19 @@ $.Controller(
                     widthExceeded  = width > maxWidth,
                     heightExceeded = height > maxHeight;
 
-                self.options.css.width  = (widthExceeded) ? maxWidth : width;
-                self.options.css.height = (heightExceeded) ? maxHeight : height;
+                options.css.width  = (widthExceeded) ? maxWidth : width;
+                options.css.height = (heightExceeded) ? maxHeight : height;
 
                 // Pass 3: Readjust dialog body's dimension based on readjusted dialog's dimension
-                self.options.body.css.width  -= (width  - self.options.css.width);
-                self.options.body.css.height -= (height - self.options.css.height);
-                self.options.body.css.minWidth = self.options.body.css.minHeight = 'auto';
+                body.css.width  -= (width  - options.css.width);
+                body.css.height -= (height - options.css.height);
+                body.css.minWidth = body.css.minHeight = 'auto';
 
                 // Pass 4: Decide scrollbar visiblity based on readjusted dialog body's dimension.
-                refBody.css(self.options.body.css);
+                refBody.css(body.css);
 
-                self.options.body.css.overflowX = (!widthExceeded  || isIframe || refBody[0].scrollWidth  <= self.options.body.css.width)  ? 'auto' : 'scroll';
-                self.options.body.css.overflowY = (!heightExceeded || isIframe || refBody[0].scrollHeight <= self.options.body.css.height) ? 'auto' : 'scroll';
+                body.css.overflowX = (!widthExceeded  || isIframe || refBody[0].scrollWidth  <= body.css.width)  ? 'auto' : 'scroll';
+                body.css.overflowY = (!heightExceeded || isIframe || refBody[0].scrollHeight <= body.css.height) ? 'auto' : 'scroll';
 
                 // Clean up
                 refBody.html('');
@@ -433,14 +436,14 @@ $.Controller(
 
             // Pass 5: Readjust position based on final dialog dimension
             refElement
-                .css(self.options.css)
+                .css(options.css)
                 //  FF3 can't retrieve css positions when element is on display: none;
-                // .initialPosition(self.options.position, true);
+                // .initialPosition(options.position, true);
                 .css('visibility', 'hidden')
-                .position(self.options.position);
+                .position(options.position);
 
-            self.options.css.top  = refElement.css('top');
-            self.options.css.left = refElement.css('left')
+            options.css.top  = refElement.css('top');
+            options.css.left = refElement.css('left')
         },
 
         finalizeButtons: function()
