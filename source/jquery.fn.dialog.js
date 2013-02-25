@@ -47,8 +47,8 @@ $.Controller(
 
             body: {
                 css: {
-                    minWidth: 400,
-                    minHeight: 200,
+                    minWidth: 0,
+                    minHeight: 0,
 
                     // If the dialog content immediate element contains margin,
                     // the margin will bleed outside of the parent container
@@ -373,9 +373,17 @@ $.Controller(
                 css = options.css,
                 bodyCss = body.css;
 
+            // Create a new ref element
+            if (refElement===undefined) {
+                refElement = self.refElement = self.initElement.clone().removeClass('global').insertAfter(self.element);
+
+            // Because it could be detached at this moment
+            } else {
+                refElement.insertAfter(self.element);
+            }
+
             if (!fast)
             {
-                refElement = self.refElement = self.initElement.clone().removeClass('global').insertAfter(self.element);
                 refTitle   = refElement.find(options.dialogTitle);
                 refBody    = refElement.find(options.dialogBody);
                 refFooter  = refElement.find(options.dialogFooter);
@@ -409,9 +417,20 @@ $.Controller(
                     .toggleClass('type-iframe', isIframe)
                     .html(refContent);
 
+                var refBodyWidth = refBody.width(),
+                    refBodyHeight = refBody.height();
+
                 if (refBody.css("boxSizing")!=="border-box") {
-                    bodyCss.width  = refBody.width();
-                    bodyCss.height = refBody.height();
+                    bodyCss.width  = refWidth;
+                    bodyCss.height = refHeight;
+                }
+
+                if (bodyCss.width < bodyCss.minWidth) {
+                    bodyCss.width = bodyCss.minWidth;
+                }
+
+                if (bodyCss.height < bodyCss.minHeight) {
+                    bodyCss.height = bodyCss.minHeight;
                 }
 
                 // Pass 2: Re-adjust dialog's dimension based on window's dimension
@@ -427,8 +446,15 @@ $.Controller(
                 css.height = (heightExceeded) ? maxHeight : height;
 
                 // Pass 3: Readjust dialog body's dimension based on readjusted dialog's dimension
-                bodyCss.width  -= (width  - css.width);
-                bodyCss.height -= (height - css.height);
+
+                if (bodyCss.width!=="auto") {
+                    bodyCss.width  -= (width  - css.width);
+                }
+
+                if (bodyCss.height!=="auto") {
+                    bodyCss.height -= (height - css.height);
+                }
+
                 bodyCss.minWidth = bodyCss.minHeight = 'auto';
 
                 // Pass 4: Decide scrollbar visiblity based on readjusted dialog body's dimension.
@@ -439,6 +465,7 @@ $.Controller(
 
                 // Clean up
                 refBody.html('');
+
             }
 
             // Pass 5: Readjust position based on final dialog dimension
@@ -513,6 +540,9 @@ $.Controller(
                         if (callback) callback.apply(self);
                         self.options.afterShow.apply(self);
                     }
+
+                    // Detach shadow dialog
+                    self.refElement.detach();
 
                     self.element.removeClass('resizing');
 
