@@ -297,7 +297,7 @@ $.Controller(
 
             if (self.options.content!==null)
             {
-                var isIframe = $($.parseHTML(self.options.content)).is('iframe');
+                var isIframe = !$.isString(self.options.content) && $(self.options.content).is('iframe');
 
                 self.dialogBody
                     .toggleClass('type-iframe', isIframe);
@@ -387,7 +387,7 @@ $.Controller(
                 }
 
                 // Pass 1: Readjust dialog body's dimension based on dialog's content
-                var isIframe = $($.parseHTML(self.options.content)).is('iframe');
+                var isIframe = !$.isString(self.options.content) && $(self.options.content).is('iframe');
 
                 var refContent = (isIframe) ? document.createElement('div') : self.stripScript(self.options.content);
 
