@@ -238,7 +238,13 @@ $.Controller(
 
                         ajax.done(function(html) {
 
-                            self.update($.extend(true, {}, contentOptions, {content: html}));
+                            var options = html;
+
+                            if ($.isString(html)) {
+                                options = {content: html};
+                            }
+
+                            self.update($.extend(true, {}, contentOptions, options));
                         });
                     });
 
