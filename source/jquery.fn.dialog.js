@@ -399,8 +399,10 @@ $.Controller(
                     .toggleClass('type-iframe', isIframe)
                     .html(refContent);
 
-                self.options.body.css.width  = refBody.width();
-                self.options.body.css.height = refBody.height();
+                if (refBody.css("boxSizing")!=="border-box") {
+                    self.options.body.css.width  = refBody.width();
+                    self.options.body.css.height = refBody.height();
+                }
 
                 // Pass 2: Re-adjust dialog's dimension based on window's dimension
                 var offset         = self.options.offset,
