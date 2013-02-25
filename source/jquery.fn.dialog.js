@@ -447,13 +447,11 @@ $.Controller(
 
                 // Pass 3: Readjust dialog body's dimension based on readjusted dialog's dimension
 
-                if (bodyCss.width!=="auto") {
-                    bodyCss.width  -= (width  - css.width);
-                }
+                if (bodyCss.width!=="auto") bodyCss.width  -= (width  - css.width);
+                if (bodyCss.width <= 0) bodyCss.width = "auto";
 
-                if (bodyCss.height!=="auto") {
-                    bodyCss.height -= (height - css.height);
-                }
+                if (bodyCss.height!=="auto") bodyCss.height -= (height - css.height);
+                if (bodyCss.height <= 0) bodyCss.height = "auto";
 
                 bodyCss.minWidth = bodyCss.minHeight = 'auto';
 
