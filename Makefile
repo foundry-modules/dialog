@@ -3,7 +3,7 @@ all: join-script-files modularize-script copy-style minify-style lessify-style c
 include ../../build/modules.mk
 
 MODULE = dialog
-MODULARIZE_OPTIONS = -d "ui/position,easing" -css "dialog/default" -ejs "dialog/default"
+MODULARIZE_OPTIONS = -d "ui/position,easing" -css "dialog/default"
 
 SOURCE_SCRIPT_FILES = ${SOURCE_SCRIPT_FOLDER}/jquery.fn.dialog.js \
 ${SOURCE_SCRIPT_FOLDER}/jquery.dialog.js
