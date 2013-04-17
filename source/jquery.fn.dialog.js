@@ -87,7 +87,7 @@ $.Controller(
             dialogContent: '.dialog-content',
             dialogButtons: '.dialog-buttons',
             dialogLoader : '.dialog-loader',
-            closeButton  : '.dialog-closeButton'
+            "{closeButton}"  : '.dialog-closeButton'
         }
     },
     function(self){ return {
@@ -130,13 +130,13 @@ $.Controller(
             self.initOptions = $.extend(true, {}, options);
 
             // Remove callbacks
-            $.each(['beforeShow', 'afterShow', 'beforeHide', 'afterHide'], function(i, name)
-            {
+            $.each(['beforeShow', 'afterShow', 'beforeHide', 'afterHide'], function(i, name){
                 self.initOptions[name] = function(){};
             });
-            self.initOptions.title   = null;
-            self.initOptions.content = null;
-            self.initOptions.buttons = null;
+
+            $.each(['title', 'content', 'buttons', 'selectors', 'bindings'], function(i, name){
+                self.initOptions[name] = null;
+            });
         },
 
         // Update is called during subsequent $.dialog() calls.
@@ -145,8 +145,14 @@ $.Controller(
         {
             if (options)
             {
+                // Prevent binder from updating dialog
+                if (options.hasOwnProperty("{binder}")) return;
+
                 var options = $.extend(true, {}, self.initOptions, options);
 
+                // Remember certain options like width, height throughout
+                // the lifetime of the dialog, but discard those that aren't
+                // like title, content, buttons, selectors, bindings & transitions.
                 self.setInitOptions(options);
 
                 self.display(options);
@@ -261,7 +267,6 @@ $.Controller(
                             self.update($.extend(true, {}, options, newOptions));
                         });
                     });
-
                     break;
 
 
@@ -589,11 +594,15 @@ $.Controller(
         {
             if (self.ready && self.resizing) return;
 
-            if (self.refElement)
-                self.refElement.remove();
+            var options = self.options;
 
-            if (!self.contentReady)
-                self.options.beforeShow.apply(self);
+            if (self.refElement) {
+                self.refElement.remove();
+            }
+
+            if (!self.contentReady) {
+                options.beforeShow.apply(self);
+            }
 
             self.resizing = true;
 
@@ -601,7 +610,7 @@ $.Controller(
 
             self.element.addClass('resizing');
 
-            self.transition[self.options.transition.show].show
+            self.transition[options.transition.show].show
                 .apply(self, [function()
                 {
                     if (!self.ready)
@@ -613,7 +622,7 @@ $.Controller(
                     if (!self.contentReady)
                     {
                         if (callback) callback.apply(self);
-                        self.options.afterShow.apply(self);
+                        options.afterShow.apply(self);
                     }
 
                     // Detach shadow dialog
@@ -627,6 +636,24 @@ $.Controller(
                     // so we can avoid all the tedious box model issues.
                     self.element.css({width: 'auto', height: 'auto'});
 
+                    // Remove old binder
+                    self.removePlugin("binder");
+
+                    // Create new bindings
+                    var selectors = options.selectors,
+                        bindings  = options.bindings;
+
+                    if (selectors && bindings) {
+
+                        var binder = $.Controller(
+                            $.uid("dialogBinder"),
+                            {defaultOptions: selectors},
+                            function(self){ return bindings }
+                        );
+
+                        self.addPlugin("binder", binder);
+                    }
+
                     if (self.displayQueue.length > 0)
                     {
                         setTimeout(function(){
@@ -638,6 +665,13 @@ $.Controller(
                     }
 
                 }]);
+        },
+
+        "{self} removePlugin": function(el, event, name, plugin) {
+
+            if (plugin===undefined) return;
+
+            delete $.Controller[plugin.Class.fullName];
         },
 
         hide: function(callback)
@@ -815,6 +849,7 @@ $.Controller(
 
             self.hide(function()
             {
+                self.removePlugin("binder");
                 self.element.remove();
                 self.refElement && self.refElement.remove();
             });
