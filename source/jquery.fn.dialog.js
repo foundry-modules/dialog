@@ -264,18 +264,38 @@ $.Controller(
 
                     break;
 
-                case 'dialog':
-                    var xml = $($.parseHTML(content)),
-                        settings = xml.find("settings").html(),
-                        newOptions = {};
-                        try { newOptions = $.parseJSON(settings); } catch(e) {};
 
-                    var title   = $.trim(xml.find("title").html()),
-                        content = $.trim(xml.find("content").html()),
-                        buttons = $.trim(xml.find("buttons").html());
-                        if (title)   newOptions.title = title;
-                        if (content) newOptions.content = content;
-                        if (buttons) newOptions.buttons = buttons;
+                // Test with:
+                // '<dialog><after_show type="javascript">function(){console.log("after_show_executed");}</after_show><selectors type="json">{"{OKButton}": ".okButton"}</selectors><width>400</width><height>200</height><show_overlay>0</show_overlay><title>foobar_title</title><content>foobar_content</content><buttons>foobar_buttons</buttons></dialog>'
+
+                case 'dialog':
+                    var xmlOptions = $($.parseHTML(content)),
+                        newOptions = {};
+
+                    $.each(xmlOptions.children(), function(i, node){
+
+                        var node = $(node),
+                            key  = $.String.camelize(this.nodeName.toLowerCase()),
+                            val  = node.html(),
+                            type = node.attr("type");
+
+                        switch (type) {
+                            case "json":
+                                try { val = $.parseJSON(val) } catch(e) {};
+                                break;
+
+                            case "javascript":
+                                try { val = eval('('+val+')') } catch(e) {};
+                                break;
+                        }
+
+                        // Automatically convert numerical values
+                        if ($.isNumeric(val)) val = parseFloat(val);
+
+                        // console.log(type, key, val);
+
+                        newOptions[key] = val;
+                    });
 
                     self.update($.extend(true, {}, options, newOptions));
                     break;
