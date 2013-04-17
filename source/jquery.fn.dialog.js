@@ -155,15 +155,34 @@ $.Controller(
             return self;
         },
 
+        determineContentType: function(content) {
+
+            if (/<dialog>(.*?)<\/dialog>/.test(content)) {
+                return 'dialog';
+            }
+
+            if ($.isUrl(content)) {
+                return 'iframe';
+            }
+
+            if ($.isDeferred(content)) {
+                return 'deferred';
+            }
+
+            return 'html';
+        },
+
         displayQueue: [],
 
         display: function(options)
         {
-            if (self.resizing)
+            if (self.resizing) {
                 return self.displayQueue.push(options);
+            }
 
-            if ($.isPlainObject(options))
+            if ($.isPlainObject(options)) {
                 self.options = $.extend(true, {}, self.Class.defaults, options);
+            }
 
             if (!self.ready)
             {
@@ -172,20 +191,20 @@ $.Controller(
                     self.createOverlay();
             }
 
-            self.contentReady = self.options.content===null;
+            var options = self.options,
+                content = options.content;
 
-            var transition = self.options.transition;
-            if (typeof transition=='string')
-                self.options.transition = { show: transition, hide: transition };
+            // Determine if content is ready
+            self.contentReady = content===null;
 
             // Determine content type
-            self.contentType = 'html';
+            self.contentType = self.determineContentType(content);
 
-            if ($.isUrl(self.options.content))
-                self.contentType = 'iframe';
-
-            if ($.isDeferred(self.options.content))
-                self.contentType = 'deferred';
+            // Normalize transition
+            var transition = options.transition;
+            if ($.isString(transition)) {
+                options.transition = { show: transition, hide: transition };
+            }
 
             switch (self.contentType)
             {
@@ -196,11 +215,11 @@ $.Controller(
 
                 case 'iframe':
                     var iframe = $(document.createElement('iframe')),
-                        iframeUrl = self.options.content,
-                        iframeCss = self.options.iframe.css,
-                        iframeButtons = self.options.buttons,
+                        iframeUrl = content,
+                        iframeCss = options.iframe.css,
+                        iframeButtons = options.buttons,
                         dialogContent = self.dialogContent,
-                        iframeOptions = $.extend(true, {}, self.options, {
+                        iframeOptions = $.extend(true, {}, options, {
                             content: iframe,
                             buttons: iframeButtons
                         });
@@ -231,23 +250,34 @@ $.Controller(
                     break;
 
                 case 'deferred':
-                    var ajax = self.options.content,
-                        contentOptions = self.options;
+                    var ajax = content;
 
                     self.showLoader(function() {
 
                         ajax.done(function(html) {
 
-                            var options = html;
+                            var newOptions = ($.isString(html)) ? {content: html} : html;
 
-                            if ($.isString(html)) {
-                                options = {content: html};
-                            }
-
-                            self.update($.extend(true, {}, contentOptions, options));
+                            self.update($.extend(true, {}, options, newOptions));
                         });
                     });
 
+                    break;
+
+                case 'dialog':
+                    var xml = $($.parseHTML(content)),
+                        settings = xml.find("settings").html(),
+                        newOptions = {};
+                        try { newOptions = $.parseJSON(settings); } catch(e) {};
+
+                    var title   = $.trim(xml.find("title").html()),
+                        content = $.trim(xml.find("content").html()),
+                        buttons = $.trim(xml.find("buttons").html());
+                        if (title)   newOptions.title = title;
+                        if (content) newOptions.content = content;
+                        if (buttons) newOptions.buttons = buttons;
+
+                    self.update($.extend(true, {}, options, newOptions));
                     break;
             }
         },
@@ -503,25 +533,34 @@ $.Controller(
 
             dialogButtons.empty();
 
-            if ($.isEmptyObject(self.options.buttons))
-            {
+            var buttons = self.options.buttons;
+
+            // No buttons
+            if ($.isEmptyObject(buttons)) {
                 dialogFooter.hide();
                 return;
             }
 
-            $.each(self.options.buttons, function(i, button)
-            {
-                var events = $.extend({}, button),
-                    classNames  = button.classNames ? button.classNames : '';
-                delete events.name;
+            // Buttons as html
+            if ($.isString(buttons)) {
+                dialogButtons.html(buttons);
+            }
 
-                $(document.createElement('button'))
-                    .attr('type', 'button')
-                    .addClass( classNames )
-                    .html(button.name)
-                    .bind(events)
-                    .appendTo(dialogButtons);
-            });
+            // Programmable buttons
+            if ($.isArray(buttons)) {
+                $.each(buttons, function(i, button) {
+                    var events = $.extend({}, button),
+                        classNames  = button.classNames ? button.classNames : '';
+                    delete events.name;
+
+                    $(document.createElement('button'))
+                        .attr('type', 'button')
+                        .addClass( classNames )
+                        .html(button.name)
+                        .bind(events)
+                        .appendTo(dialogButtons);
+                });
+            }
 
             dialogFooter.show();
         },
