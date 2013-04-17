@@ -163,7 +163,7 @@ $.Controller(
 
         determineContentType: function(content) {
 
-            if (/<dialog>(.*?)<\/dialog>/.test(content)) {
+            if (/<dialog>(.*?)/.test(content)) {
                 return 'dialog';
             }
 
