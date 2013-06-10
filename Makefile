@@ -4,6 +4,10 @@ MODULE = dialog
 FILENAME = ${MODULE}.js
 RAWFILE = ${DEVELOPMENT_DIR}/${MODULE}.raw.js
 
+MANIFEST_FILENAME = ${MODULE}.json
+MANIFEST_SOURCE = ${MANIFEST_FILENAME}
+MANIFEST_TARGET = ${DEVELOPMENT_DIR}/${MANIFEST_FILENAME}
+
 SOURCE = ${SOURCE_DIR}/module_intro.js \
 ${SOURCE_DIR}/jquery.fn.dialog.js \
 ${SOURCE_DIR}/jquery.dialog.js \
@@ -27,6 +31,8 @@ module:
 	cp ${SOURCE_DIR}/default.ejs ${DEVELOPMENT_FOLDER}/default.htm
 	cp ${SOURCE_DIR}/images/* ${DEVELOPMENT_FOLDER}/images/
 	cp ${SOURCE_DIR}/default.css ${DEVELOPMENT_FOLDER}/default.css
+
+	cp ${MANIFEST_SOURCE} ${MANIFEST_TARGET}
 
 min:
 	${UGLIFYJS} ${DEVELOPMENT} > ${PRODUCTION}

@@ -1,0 +1,20 @@
+{
+	"library":
+	[
+		// DO NOT PARSE THESE YET
+		// "ui/core",
+		// "ui/position",
+		// "throttle-debounce",
+		// "easing"
+	],
+
+	"stylesheet":
+	[
+		"dialog/default"
+	],
+
+	"template":
+	[
+		"dialog/default"
+	]
+}
