@@ -631,7 +631,7 @@ $.Controller(
                 {
                     if (!self.ready)
                     {
-                        self.on("resize.dialog scroll.dialog", window, $._debounce(function(){ self.refresh() }, 150));
+                        self.on("resize.dialog scroll.dialog", window, $._.debounce(function(){ self.refresh() }, 150));
                         self.ready = true;
                     }
 
