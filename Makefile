@@ -1,13 +1,12 @@
-all: join-script-files modularize-script copy-script-manifest copy-style minify-style lessify-style copy-assets copy-template
+all: join-script-files modularize-script copy-style minify-style lessify-style copy-assets copy-template
 
 include ../../build/modules.mk
 
 MODULE = dialog
+MODULARIZE_OPTIONS = -d "ui/position,easing" -css "dialog/default" -ejs "dialog/default"
 
-SOURCE_SCRIPT_FILES = ${SOURCE_SCRIPT_FOLDER}/module_intro.js \
-${SOURCE_SCRIPT_FOLDER}/jquery.fn.dialog.js \
-${SOURCE_SCRIPT_FOLDER}/jquery.dialog.js \
-${SOURCE_SCRIPT_FOLDER}/module_outro.js
+SOURCE_SCRIPT_FILES = ${SOURCE_SCRIPT_FOLDER}/jquery.fn.dialog.js \
+${SOURCE_SCRIPT_FOLDER}/jquery.dialog.js
 
 SOURCE_STYLE_FILE_PREFIX = 
 SOURCE_STYLE_FILE_NAME = default

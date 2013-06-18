@@ -1,3 +1,17 @@
+/**
+ * jquery.dialog.
+ * jQuery dialog with extensible transitions,
+ * iframe & ajax content support.
+ *
+ * Copyright (c) 2011 Jason Ramos
+ * www.stackideas.com
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ */
+
 $.Controller(
     'Dialog',
     {
@@ -615,7 +629,7 @@ $.Controller(
                 {
                     if (!self.ready)
                     {
-                        self.on("resize.dialog scroll.dialog", window, $.debounce(150, function(){ self.refresh() }));
+                        self.on("resize.dialog scroll.dialog", window, $._debounce(function(){ self.refresh() }, 150));
                         self.ready = true;
                     }
 
