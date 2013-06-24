@@ -1,4 +1,4 @@
-all: join-script-files modularize-script copy-style minify-style lessify-style copy-assets copy-template
+all: join-script-files modularize-script minify-script copy-style minify-style lessify-style copy-assets copy-template
 
 include ../../build/modules.mk
 
