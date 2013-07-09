@@ -593,6 +593,7 @@ $.Controller(
                     var events = $.extend({}, button),
                         classNames  = button.classNames ? button.classNames : '';
                     delete events.name;
+                    delete events.classNames;
 
                     $(document.createElement('button'))
                         .attr('type', 'button')
