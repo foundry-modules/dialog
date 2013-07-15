@@ -308,6 +308,10 @@ $.Controller(
                             case "javascript":
                                 try { val = eval('('+val+')') } catch(e) {};
                                 break;
+
+                            case "text":
+                                val = node.text();
+                                break;
                         }
 
                         // Automatically convert numerical values
