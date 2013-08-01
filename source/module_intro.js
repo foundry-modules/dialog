@@ -12,6 +12,8 @@
  *
  */
 
+$.template("dialog/default", '<div class="foundryDialog global"><div class="dialog-wrap"><div class="in"><div class="dialog-loader"><div class="loader-img"></div></div><div class="dialog-head"><span class="dialog-title"></span><a class="dialog-closeButton">Close</a></div><div class="dialog-body dialog-content"></div><div class="dialog-footer"><div class="dialog-buttons"></div></div></div></div></div>');
+
 $.require()
  .library(
     'mvc/controller',
@@ -21,9 +23,6 @@ $.require()
     'easing'
  )
  .stylesheet(
-    'dialog/default'
- )
- .template(
     'dialog/default'
  )
  .done(function() {
