@@ -290,7 +290,7 @@ $.Controller(
                 // '<dialog><after_show type="javascript">function(){console.log("after_show_executed");}</after_show><selectors type="json">{"{OKButton}": ".okButton"}</selectors><width>400</width><height>200</height><show_overlay>0</show_overlay><title>foobar_title</title><content>foobar_content</content><buttons>foobar_buttons</buttons></dialog>'
 
                 case 'dialog':
-                    var xmlOptions = $($.parseHTML(content)),
+                    var xmlOptions = $.buildHTML(content),
                         newOptions = {};
 
                     $.each(xmlOptions.children(), function(i, node){
