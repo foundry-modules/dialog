@@ -387,6 +387,8 @@ $.Controller(
             self.dialogContent
                 .css(options.body.css);
 
+            if (self.refreshing) return;
+
             if (options.title!==null)
                 self.dialogTitle
                     .html(options.title);
@@ -717,9 +719,13 @@ $.Controller(
 
             self.resizing = true;
 
+            self.refreshing = true;
+
             self.transition[self.options.transition.show].show.apply(self, [function()
             {
                 self.resizing = false;
+
+                self.refreshing = false;
 
                 // Let the dialog container wrap to dialog content's final natural size,
                 // so we can avoid all the tedious box model issues.
