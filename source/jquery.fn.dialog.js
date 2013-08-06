@@ -894,6 +894,18 @@ $.Controller(
             var dialogContent = self.dialogContent;
             var iframe = dialogContent.find("> iframe");
             return (iframe.length > 0) ? iframe.contents() : dialogContent;
-        }
+        },
+
+        messageGroup: function() {
+
+            var dialogBody = self.dialogBody,
+                messageGroup = dialogBody.find("> [data-message-group]");
+
+            if (messageGroup.length < 1) {
+                messageGroup = $("<div data-message-group></div>").prependTo(dialogBody);
+            }
+
+            return messageGroup;
+        }       
     }}
 );
