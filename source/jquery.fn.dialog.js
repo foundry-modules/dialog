@@ -281,7 +281,24 @@ $.Controller(
                             var newOptions = ($.isString(html)) ? {content: html} : html;
 
                             self.update($.extend(true, {}, options, newOptions));
-                        });
+                        })
+                        .fail(function(message, type){
+
+                            var title = 
+                                    $.isString(type) ?
+                                        $.String.capitalize(type) :
+                                        "Error",
+
+                                content =
+                                    $.isString(message) ?
+                                        message :
+                                        "There was an error loading content.";
+
+                            self.update({
+                                title: title,
+                                content: content
+                            });
+                        });                        
                     });
                     break;
 
