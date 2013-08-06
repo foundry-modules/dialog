@@ -91,6 +91,8 @@ $.Controller(
                 hide: 'zoom'
             },
 
+            escapeKey: true,
+
             beforeShow: function(){},
             afterShow : function(){},
             beforeHide: function(){},
@@ -139,6 +141,10 @@ $.Controller(
             }
 
             self.display();
+        },
+
+        "{self} destroyed": function() {
+            $(document).off("keydown.foundry.dialog");
         },
 
         setInitOptions: function(options)
@@ -644,6 +650,16 @@ $.Controller(
                 options.beforeShow.apply(self);
             }
 
+            $(document).off("keydown.foundry.dialog");
+
+            if (options.escapeKey) {
+                $(document).on("keydown.foundry.dialog", function(event){
+                    if (event.keyCode==27) {
+                        self.close();
+                    }
+                }); 
+            }
+
             self.resizing = true;
 
             self.finalizeSize();
@@ -890,6 +906,8 @@ $.Controller(
             if (self.closing) return;
 
             self.closing = true;
+
+            $(document).off("keydown.foundry.dialog");
 
             self.hide(function()
             {
