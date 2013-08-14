@@ -754,8 +754,12 @@ $.Controller(
 
             self.refreshing = true;
 
+            $(window).trigger("dialogTransitionStart");
+
             self.transition[self.options.transition.show].show.apply(self, [function()
             {
+                $(window).trigger("dialogTransitionEnd");
+                
                 self.resizing = false;
 
                 self.refreshing = false;
