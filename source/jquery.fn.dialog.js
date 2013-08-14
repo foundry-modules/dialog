@@ -666,6 +666,8 @@ $.Controller(
 
             self.element.addClass('resizing');
 
+            $(window).trigger("dialogTransitionStart");
+
             self.transition[options.transition.show].show
                 .apply(self, [function()
                 {
@@ -718,6 +720,8 @@ $.Controller(
                         }, 500);
                     } else {
                         self.resizing = false;
+
+                        $(window).trigger("dialogTransitionEnd");
                     }
 
                 }]);
@@ -735,11 +739,15 @@ $.Controller(
             if (!self.contentReady)
                 self.options.beforeHide.apply(self);
 
+            $(window).trigger("dialogTransitionStart");
+
             self.transition[self.options.transition.hide].hide
                 .apply(self, [function()
                 {
                     if (callback) callback.apply(self);
                     self.options.afterHide.apply(self);
+
+                    $(window).trigger("dialogTransitionEnd");
                 }]);
         },
 
@@ -759,7 +767,7 @@ $.Controller(
             self.transition[self.options.transition.show].show.apply(self, [function()
             {
                 $(window).trigger("dialogTransitionEnd");
-                
+
                 self.resizing = false;
 
                 self.refreshing = false;
