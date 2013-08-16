@@ -204,6 +204,7 @@ $.Controller(
 
         display: function(options)
         {
+
             if (self.resizing) {
                 return self.displayQueue.push(options);
             }
@@ -285,6 +286,9 @@ $.Controller(
                         ajax.done(function(html) {
 
                             var newOptions = ($.isString(html)) ? {content: html} : html;
+
+                            // Do not proceed if there are no new content to update.
+                            if (newOptions && newOptions.content===undefined) return;
 
                             self.update($.extend(true, {}, options, newOptions));
                         })
