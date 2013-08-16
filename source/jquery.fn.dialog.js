@@ -285,10 +285,12 @@ $.Controller(
 
                         ajax.done(function(html) {
 
+                            if (!html) return;
+
                             var newOptions = ($.isString(html)) ? {content: html} : html;
 
                             // Do not proceed if there are no new content to update.
-                            if (newOptions && newOptions.content===undefined) return;
+                            if (!newOptions.content) return;
 
                             self.update($.extend(true, {}, options, newOptions));
                         })
