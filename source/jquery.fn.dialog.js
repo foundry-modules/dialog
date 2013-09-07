@@ -331,11 +331,15 @@ $.Controller(
 
                         switch (type) {
                             case "json":
-                                try { val = $.parseJSON(val) } catch(e) {};
+                                try {
+                                    val = $.parseJSON(val);
+                                } catch(e) {};
                                 break;
 
                             case "javascript":
-                                try { val = eval('('+val+')') } catch(e) {};
+                                try {
+                                    val = eval('(function($){ return ' + $.trim(val) + ' })(' + $.globalNamespace + ')');
+                                } catch(e) {};
                                 break;
 
                             case "text":
