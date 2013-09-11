@@ -264,6 +264,10 @@ $.Controller(
                                 // and url checking takes a lot more code to write.
                                 try { iframe[0].contentWindow.parentDialog = self; } catch(err) {};
 
+                                // Prevent scrollbar from showing in loading dialog
+                                self.dialogBody
+                                    .addClass('type-iframe');                                
+
                                 self.update(iframeOptions);
                             };
                         })();
