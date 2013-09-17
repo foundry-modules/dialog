@@ -12,7 +12,7 @@
  *
  */
 
- $.template('dialog/default', '<div class="foundryDialog global"><div class="dialog-wrap"><div class="in"><div class="dialog-loader"><div class="loader-img"></div></div><div class="dialog-head"><span class="dialog-title"></span><a class="dialog-closeButton">Close</a></div><div class="dialog-body dialog-content"></div><div class="dialog-footer"><div class="dialog-buttons"></div></div></div></div></div>');
+ $.template('dialog/default', '<div class="foundryDialog global"><div class="dialog-wrap"><div class="in"><div class="dialog-loader"><div class="loader-img"></div></div><div class="dialog-head"><span class="dialog-title"></span><a class="dialog-closeButton">Close</a></div><div class="dialog-body dialog-content"></div><div class="dialog-footer"><div class="dialog-loading"></div><div class="dialog-buttons"></div></div></div></div></div>');
 
 $.Controller(
     'Dialog',
@@ -75,8 +75,10 @@ $.Controller(
 
             loader: {
                 width: 300,
-                height: 100
+                height: 100,
             },
+
+            loading: "",
 
             iframe: {
                 css: {
@@ -105,6 +107,7 @@ $.Controller(
             dialogContent: '.dialog-content',
             dialogButtons: '.dialog-buttons',
             dialogLoader : '.dialog-loader',
+            dialogLoading: '.dialog-loading',
             "{closeButton}"  : '.dialog-closeButton'
         }
     },
@@ -130,7 +133,8 @@ $.Controller(
                 'dialogTitle',
                 'dialogContent',
                 'dialogButtons',
-                'dialogLoader'
+                'dialogLoader',
+                'dialogLoading'
             ], function(i, name)
             {
                 self[name] = self.find(self.options[name]);
@@ -156,7 +160,7 @@ $.Controller(
                 self.initOptions[name] = function(){};
             });
 
-            $.each(['title', 'content', 'buttons', 'selectors', 'bindings'], function(i, name){
+            $.each(['title', 'content', 'buttons', 'loading', 'selectors', 'bindings'], function(i, name){
                 self.initOptions[name] = null;
             });
         },
@@ -363,8 +367,29 @@ $.Controller(
                     break;
             }
         },
+        
+        loading: function(flag) {
 
-        loading: false,
+            var el = self.element;
+
+            if (flag===undefined) {
+                return el.hasClass("loading");
+            }
+
+            if (flag===false) {
+                el.removeClass("loading");
+                return;
+            }
+
+            if (flag===true) {
+                flag = self.options.loading || "";
+            }
+
+            if ($.isString(flag)) {
+                el.addClass("loading");
+                self.dialogLoading.html(flag);
+            }
+        },
 
         showLoader: function(callback)
         {
@@ -405,6 +430,7 @@ $.Controller(
 
         hideLoader: function()
         {
+            self.element.removeClass("loading");
             self.dialogLoader.hide();
         },
 
