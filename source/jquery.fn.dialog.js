@@ -793,8 +793,9 @@ $.Controller(
 
         refresh: function()
         {
-            if (self.closing)
-                return;
+            if (self.closing) return;
+
+            if (self.resizing) return;
 
             self.finalizeSize(true);
 
