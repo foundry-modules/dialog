@@ -304,7 +304,7 @@ $.Controller(
                         })
                         .fail(function(message, type){
 
-                            var title = 
+                            var title =
                                     $.isString(type) ?
                                         $.String.capitalize(type) :
                                         "Error",
@@ -318,7 +318,7 @@ $.Controller(
                                 title: title,
                                 content: content
                             });
-                        });                        
+                        });
                     });
                     break;
 
@@ -367,7 +367,7 @@ $.Controller(
                     break;
             }
         },
-        
+
         loading: function(flag) {
 
             var el = self.element;
@@ -579,8 +579,8 @@ $.Controller(
                     refBodyHeight = refBody.height();
 
                 if (refBody.css("boxSizing")!=="border-box") {
-                    bodyCss.width  = refWidth;
-                    bodyCss.height = refHeight;
+                    bodyCss.width  = refBodyWidth;
+                    bodyCss.height = refBodyHeight;
                 }
 
                 if (bodyCss.width < bodyCss.minWidth) {
@@ -697,7 +697,7 @@ $.Controller(
                     if (event.keyCode==27) {
                         self.close();
                     }
-                }); 
+                });
             }
 
             self.resizing = true;
@@ -994,6 +994,6 @@ $.Controller(
             }
 
             return messageGroup;
-        }       
+        }
     }}
 );

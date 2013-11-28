@@ -36,7 +36,7 @@ $.dialog = function(options) {
 
     } else {
 
-        controller = dialog.implement('dialog', options, function(){}).controllers("dialog")[0];
+        controller = dialog.addController('Dialog', options);
     }
 
     return controller;
